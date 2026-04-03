@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>HonzaUceni - 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ============ TOP BAR ============ -->
+    <div id="top-bar">
+        <div class="top-bar-left">
+            <span class="logo-text" onclick="goHome()">🎓 HonzaUceni</span>
+        </div>
+        <div class="top-bar-right">
+            <div class="xp-pill" id="xp-pill" title="Tvoje XP">
+                <i class="fas fa-star"></i>
+                <span id="total-xp">0</span> XP
+            </div>
+            <div class="level-pill" id="level-pill" title="Tvůj level">
+                Lv. <span id="user-level">1</span>
+            </div>
+            <div class="streak-pill" id="streak-pill" title="Série správných">
+                🔥 <span id="streak-count">0</span>
+            </div>
+            <button class="icon-btn" id="dark-mode-toggle" title="Tmavý režim" onclick="toggleDarkMode()">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="icon-btn" id="sound-toggle" title="Zvuk" onclick="toggleSound()">
+                <i class="fas fa-volume-high"></i>
+            </button>
+            <button class="icon-btn" id="stats-btn" title="Statistiky" onclick="showScreen('stats-screen')">
+                <i class="fas fa-chart-bar"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ MAIN MENU ============ -->
+    <div id="main-menu" class="screen active-screen">
+        <div class="hero-section">
+            <h1 class="hero-title">Vítej v HonzaUceni! 🚀</h1>
+            <p class="hero-sub">Vyber si předmět a začni se učit hravě</p>
+        </div>
+        <div class="grid main-grid">
+            <button class="card card-math" onclick="startMath()">
+                <div class="card-icon">🔢</div>
+                <div class="card-label">Násobení</div>
+                <div class="card-desc">Procvič malou násobilku</div>
+            </button>
+            <button class="card card-cz" onclick="startCzech()">
+                <div class="card-icon">🔤</div>
+                <div class="card-label">Čeština</div>
+                <div class="card-desc">Velká písmena a pravopis</div>
+            </button>
+            <button class="card card-en" onclick="showEnGrades()">
+                <div class="card-icon">🇬🇧</div>
+                <div class="card-label">English</div>
+                <div class="card-desc">Slovíčka 4.–9. třída</div>
+            </button>
+        </div>
+
+        <!-- Recent activity -->
+        <div id="recent-activity" class="recent-section" style="display:none;">
+            <h3><i class="fas fa-history"></i> Poslední aktivita</h3>
+            <div id="recent-list"></div>
+        </div>
+
+        <!-- Achievements preview -->
+        <div class="achievements-preview">
+            <h3><i class="fas fa-trophy"></i> Úspěchy</h3>
+            <div id="achievements-mini" class="achievements-mini-grid"></div>
+        </div>
+
+        <button id="teacher-login-btn" onclick="showScreen('login-screen')">🔐</button>
+    </div>
+
+    <!-- ============ LOGIN SCREEN ============ -->
+    <div id="login-screen" class="screen">
+        <button class="back-btn" onclick="showScreen('main-menu')"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <h1 class="screen-title">Teacher Login 👨‍🏫</h1>
+        <div class="game-container">
+            <div class="input-group">
+                <label>Jméno</label>
+                <input id="login-name" placeholder="Zadej jméno">
+            </div>
+            <div class="input-group">
+                <label>Heslo</label>
+                <input id="login-pass" type="password" placeholder="Zadej heslo">
+            </div>
+            <button class="btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> Přihlásit</button>
+            <div id="login-msg" class="message"></div>
+        </div>
+    </div>
+
+    <!-- ============ EN GRADES ============ -->
+    <div id="en-grades" class="screen">
+        <button class="back-btn" onclick="showScreen('main-menu')"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <h1 class="screen-title">Vyber si třídu 🎒</h1>
+        <div class="grid grades-grid" id="grades-grid">
+            <button class="card card-en grade-card" onclick="showEnSub('4')">
+                <div class="card-icon">4</div>
+                <div class="card-label">4. Třída</div>
+                <div class="grade-progress" id="grade-prog-4"></div>
+            </button>
+            <button class="card card-en grade-card" onclick="showEnSub('5')">
+                <div class="card-icon">5</div>
+                <div class="card-label">5. Třída</div>
+                <div class="grade-progress" id="grade-prog-5"></div>
+            </button>
+            <button class="card card-en grade-card" onclick="showEnSub('6')">
+                <div class="card-icon">6</div>
+                <div class="card-label">6. Třída</div>
+                <div class="grade-progress" id="grade-prog-6"></div>
+            </button>
+            <button class="card card-en grade-card" onclick="showEnSub('7')">
+                <div class="card-icon">7</div>
+                <div class="card-label">7. Třída</div>
+                <div class="grade-progress" id="grade-prog-7"></div>
+            </button>
+            <button class="card card-en grade-card" onclick="showEnSub('8')">
+                <div class="card-icon">8</div>
+                <div class="card-label">8. Třída</div>
+                <div class="grade-progress" id="grade-prog-8"></div>
+            </button>
+            <button class="card card-en grade-card" onclick="showEnSub('9')">
+                <div class="card-icon">9</div>
+                <div class="card-label">9. Třída</div>
+                <div class="grade-progress" id="grade-prog-9"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ EN TOPIC MENU ============ -->
+    <div id="en-menu" class="screen">
+        <button class="back-btn" onclick="showScreen('en-grades')"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <h1 id="en-menu-title" class="screen-title">Témata 🇬🇧</h1>
+        <div id="en-sub-list" class="sub-list"></div>
+        <div id="my-exercises-section" style="display:none;">
+            <div class="section-header"><i class="fas fa-star"></i> Moje Cvičení</div>
+            <div id="my-exercises-list" class="sub-list"></div>
+        </div>
+    </div>
+
+    <!-- ============ GAME MODE SELECTOR ============ -->
+    <div id="mode-select" class="screen">
+        <button class="back-btn" id="mode-back-btn"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <h1 class="screen-title">Vyber herní mód 🎮</h1>
+        <div class="grid mode-grid">
+            <button class="card mode-card mode-typing" onclick="selectMode('typing')">
+                <div class="card-icon"><i class="fas fa-keyboard"></i></div>
+                <div class="card-label">Psaní</div>
+                <div class="card-desc">Napiš správnou odpověď</div>
+            </button>
+            <button class="card mode-card mode-choice" onclick="selectMode('choice')">
+                <div class="card-icon"><i class="fas fa-list-check"></i></div>
+                <div class="card-label">Výběr</div>
+                <div class="card-desc">Vyber ze 4 možností</div>
+            </button>
+            <button class="card mode-card mode-flash" onclick="selectMode('flashcard')">
+                <div class="card-icon"><i class="fas fa-clone"></i></div>
+                <div class="card-label">Kartičky</div>
+                <div class="card-desc">Otoč a uč se</div>
+            </button>
+            <button class="card mode-card mode-speed" onclick="selectMode('speed')">
+                <div class="card-icon"><i class="fas fa-bolt"></i></div>
+                <div class="card-label">Bleskový</div>
+                <div class="card-desc">60s na max bodů!</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ TYPING GAME SCREEN ============ -->
+    <div id="game-screen" class="screen">
+        <button id="game-back-btn" class="back-btn"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <div class="game-hud">
+            <div class="hud-item" id="hud-timer"><i class="fas fa-clock"></i> <span id="timer-val">0s</span></div>
+            <div class="hud-item" id="hud-progress"><i class="fas fa-tasks"></i> <span id="progress-val">0/0</span></div>
+            <div class="hud-item hud-streak" id="hud-streak">🔥 <span id="game-streak">0</span></div>
+            <div class="hud-item" id="hud-score"><i class="fas fa-star"></i> <span id="score">0</span></div>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="game-progress-bar"></div>
+        </div>
+        <div class="game-container" id="game-container">
+            <span id="hint-text" class="hint-label">Zadání:</span>
+            <div id="q-text" class="question">Načítám...</div>
+            <div class="input-area">
+                <input type="text" id="ans-input" autocomplete="off" placeholder="Tvoje odpověď..." readonly>
+            </div>
+            <div class="btn-row">
+                <button class="btn-check" onclick="checkAnswer()"><i class="fas fa-check"></i> Zkontrolovat</button>
+                <button class="btn-hint" onclick="showHint()"><i class="fas fa-lightbulb"></i> Pomoc</button>
+                <button class="btn-skip" onclick="skipQuestion()"><i class="fas fa-forward"></i> Přeskočit</button>
+            </div>
+            <div id="msg" class="message"></div>
+            <div class="keyboard" id="keyboard"></div>
+        </div>
+    </div>
+
+    <!-- ============ MULTIPLE CHOICE SCREEN ============ -->
+    <div id="choice-screen" class="screen">
+        <button class="back-btn" id="choice-back-btn"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <div class="game-hud">
+            <div class="hud-item"><i class="fas fa-clock"></i> <span id="choice-timer-val">0s</span></div>
+            <div class="hud-item"><i class="fas fa-tasks"></i> <span id="choice-progress-val">0/0</span></div>
+            <div class="hud-item hud-streak">🔥 <span id="choice-streak">0</span></div>
+            <div class="hud-item"><i class="fas fa-star"></i> <span id="choice-score">0</span></div>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="choice-progress-bar"></div>
+        </div>
+        <div class="game-container choice-container">
+            <span class="hint-label" id="choice-hint">Přelož:</span>
+            <div id="choice-q" class="question">Načítám...</div>
+            <div class="choices-grid" id="choices-grid"></div>
+            <div id="choice-msg" class="message"></div>
+        </div>
+    </div>
+
+    <!-- ============ FLASHCARD SCREEN ============ -->
+    <div id="flash-screen" class="screen">
+        <button class="back-btn" id="flash-back-btn"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <div class="game-hud">
+            <div class="hud-item"><i class="fas fa-tasks"></i> <span id="flash-progress-val">0/0</span></div>
+            <div class="hud-item"><i class="fas fa-check"></i> Znám: <span id="flash-known">0</span></div>
+            <div class="hud-item"><i class="fas fa-times"></i> Neznám: <span id="flash-unknown">0</span></div>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="flash-progress-bar"></div>
+        </div>
+        <div class="flashcard-wrapper">
+            <div class="flashcard" id="flashcard" onclick="flipCard()">
+                <div class="flashcard-inner" id="flashcard-inner">
+                    <div class="flashcard-front">
+                        <div class="flash-hint" id="flash-hint">Přelož:</div>
+                        <div class="flash-word" id="flash-front-word">Slovo</div>
+                        <div class="flash-tap">Klikni pro otočení</div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div class="flash-label">Odpověď:</div>
+                        <div class="flash-word" id="flash-back-word">Answer</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flash-buttons">
+                <button class="btn-flash-no" onclick="flashRate(false)"><i class="fas fa-times"></i> Neznám</button>
+                <button class="btn-flash-yes" onclick="flashRate(true)"><i class="fas fa-check"></i> Znám!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SPEED ROUND SCREEN ============ -->
+    <div id="speed-screen" class="screen">
+        <button class="back-btn" id="speed-back-btn"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <div class="speed-hud">
+            <div class="speed-timer-ring" id="speed-timer-ring">
+                <svg viewBox="0 0 100 100">
+                    <circle class="ring-bg" cx="50" cy="50" r="45"/>
+                    <circle class="ring-fg" id="ring-fg" cx="50" cy="50" r="45"/>
+                </svg>
+                <span id="speed-time-left">60</span>
+            </div>
+            <div class="speed-score-big">
+                <span id="speed-score">0</span>
+                <small>bodů</small>
+            </div>
+        </div>
+        <div class="game-container speed-container">
+            <div id="speed-q" class="question speed-question">Připraven?</div>
+            <div class="choices-grid" id="speed-choices"></div>
+            <div id="speed-msg" class="message"></div>
+        </div>
+        <!-- Countdown overlay -->
+        <div class="speed-countdown-overlay" id="speed-countdown" style="display:none;">
+            <div class="countdown-number" id="countdown-num">3</div>
+        </div>
+    </div>
+
+    <!-- ============ ROUND COMPLETE SCREEN ============ -->
+    <div id="complete-screen" class="screen">
+        <div class="complete-container">
+            <div class="complete-icon" id="complete-icon">🏆</div>
+            <h1 class="complete-title" id="complete-title">Skvělá práce!</h1>
+            <div class="complete-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="comp-score">0</div>
+                    <div class="stat-label">Bodů</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="comp-correct">0</div>
+                    <div class="stat-label">Správně</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="comp-accuracy">0%</div>
+                    <div class="stat-label">Přesnost</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="comp-time">0s</div>
+                    <div class="stat-label">Čas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="comp-streak">0</div>
+                    <div class="stat-label">Max série</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="comp-xp">+0</div>
+                    <div class="stat-label">XP</div>
+                </div>
+            </div>
+            <div class="xp-gain-bar">
+                <div class="xp-gain-fill" id="xp-gain-fill"></div>
+                <span id="xp-gain-text">Lv. 1</span>
+            </div>
+            <!-- Wrong answers review -->
+            <div id="wrong-review" class="wrong-review" style="display:none;">
+                <h3><i class="fas fa-redo"></i> K opakování:</h3>
+                <div id="wrong-list"></div>
+            </div>
+            <div class="complete-buttons">
+                <button class="btn-primary" onclick="replayRound()"><i class="fas fa-redo"></i> Znovu</button>
+                <button class="btn-secondary" onclick="practiceWrong()" id="btn-practice-wrong" style="display:none;"><i class="fas fa-dumbbell"></i> Procvič chyby</button>
+                <button class="btn-secondary" onclick="goHome()"><i class="fas fa-home"></i> Domů</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ STATISTICS SCREEN ============ -->
+    <div id="stats-screen" class="screen">
+        <button class="back-btn" onclick="showScreen('main-menu')"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <h1 class="screen-title"><i class="fas fa-chart-bar"></i> Statistiky</h1>
+        <div class="stats-overview">
+            <div class="stat-card big">
+                <div class="stat-value" id="stats-total-sessions">0</div>
+                <div class="stat-label">Celkem her</div>
+            </div>
+            <div class="stat-card big">
+                <div class="stat-value" id="stats-total-correct">0</div>
+                <div class="stat-label">Správných</div>
+            </div>
+            <div class="stat-card big">
+                <div class="stat-value" id="stats-avg-accuracy">0%</div>
+                <div class="stat-label">Průměrná přesnost</div>
+            </div>
+            <div class="stat-card big">
+                <div class="stat-value" id="stats-total-xp">0</div>
+                <div class="stat-label">Celkem XP</div>
+            </div>
+            <div class="stat-card big">
+                <div class="stat-value" id="stats-best-streak">0</div>
+                <div class="stat-label">Nejlepší série</div>
+            </div>
+            <div class="stat-card big">
+                <div class="stat-value" id="stats-total-time">0m</div>
+                <div class="stat-label">Celkový čas</div>
+            </div>
+        </div>
+        <div class="chart-section">
+            <h3>Přesnost za posledních 7 dní</h3>
+            <div class="chart-wrapper">
+                <canvas id="accuracy-chart"></canvas>
+            </div>
+        </div>
+        <div class="chart-section">
+            <h3>Aktivita dle předmětu</h3>
+            <div class="chart-wrapper chart-small">
+                <canvas id="subject-chart"></canvas>
+            </div>
+        </div>
+        <div class="stats-history">
+            <h3><i class="fas fa-history"></i> Historie her</h3>
+            <div id="history-list" class="history-list"></div>
+        </div>
+    </div>
+
+    <!-- ============ ACHIEVEMENTS SCREEN ============ -->
+    <div id="achievements-screen" class="screen">
+        <button class="back-btn" onclick="showScreen('main-menu')"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <h1 class="screen-title"><i class="fas fa-trophy"></i> Úspěchy</h1>
+        <div id="achievements-full" class="achievements-grid"></div>
+    </div>
+
+    <!-- ============ CUSTOM LESSON EDITOR ============ -->
+    <div id="custom-create" class="screen">
+        <button class="back-btn" onclick="showScreen('en-menu')"><i class="fas fa-arrow-left"></i> Zpět</button>
+        <h1 class="screen-title">Editor lekce ✏️</h1>
+        <div class="editor-container">
+            <div class="input-group">
+                <label>Název cvičení</label>
+                <input id="lesson-name-input" placeholder="Např. Unit 5 Vocabulary">
+            </div>
+            <div id="custom-list" class="editor-list"></div>
+            <div class="editor-buttons">
+                <button class="btn-secondary" onclick="addQuestion()"><i class="fas fa-plus"></i> Otázka</button>
+                <button class="btn-secondary btn-danger" onclick="removeQuestion()"><i class="fas fa-minus"></i> Odebrat</button>
+                <button class="btn-primary" onclick="saveAndPlay()"><i class="fas fa-rocket"></i> Uložit a Hrát!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TOAST NOTIFICATION ============ -->
+    <div id="toast-container"></div>
+
+    <!-- ============ ACHIEVEMENT POPUP ============ -->
+    <div id="achievement-popup" class="achievement-popup" style="display:none;">
+        <div class="achievement-popup-inner">
+            <div class="achievement-popup-icon" id="ach-popup-icon">🏆</div>
+            <div class="achievement-popup-text">
+                <small>Nový úspěch!</small>
+                <strong id="ach-popup-name">Achievement</strong>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/achievements.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
