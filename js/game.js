@@ -486,7 +486,8 @@ const Game = (() => {
             if (state.isSpeedActive) nextSpeedQuestion();
         }, 500);
     }
-
+    // ===== ty hacker? =====
+    console.log("%cHej! Ty jsi taky hacker? Pozdravuj učitele! 👋", "color: #ff4500; font-size: 20px; font-weight: bold;");
     // ===== COMMON FUNCTIONS =====
     function startTimer(elementId) {
         state.secondsPassed = 0;
